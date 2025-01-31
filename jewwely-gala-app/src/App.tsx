@@ -1,4 +1,7 @@
 import './App.css'
+import 'bootstrap/dist/css/bootstrap.css'; 
+// import './template2.css'
+
 import React from "react"
 import { BrowserRouter } from "react-router-dom"
 import { AuthProvider } from './contexts/AuthContext'

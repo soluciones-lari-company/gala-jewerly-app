@@ -1,12 +1,17 @@
-import React, { useContext } from "react"
+import { useContext } from "react"
 import { AuthContext } from "../../contexts/AuthContext"
 
 type Props = {}
 
 const Home = ( props: Props) => {
-    const authenticated = useContext(AuthContext)
+    const cookie = useContext(AuthContext)
+    const logout = () =>{
+        cookie?.logout()
+    }
     return(
-        <div>Home: {authenticated?.authenticated.token?.expiresIn}</div>
+        <div className="row">
+            home
+        </div>
     )
 }
 
