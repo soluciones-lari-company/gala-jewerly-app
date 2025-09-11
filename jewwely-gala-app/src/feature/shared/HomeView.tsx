@@ -1,19 +1,12 @@
-import { useContext } from "react"
-import { AuthContext } from "../../contexts/AuthContext"
+import ItemSearch from "../inventory/ItemSearch";
 
-type Props = {}
+const Home = () => {
+  return (
+    <>
 
-const Home = ( props: Props) => {
-    const cookie = useContext(AuthContext)
-    const logout = () =>{
-        cookie?.logout()
-    }
-    return(
-        <div className="row">
-            home
-        </div>
-    )
-}
-
+      <ItemSearch></ItemSearch>
+    </>
+  );
+};
 
 export default Home;

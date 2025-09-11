@@ -1,11 +1,12 @@
-import { useContext, useState } from "react";
+import { ChangeEvent, useContext, useEffect, useState } from "react";
 import {
   AddFeatureToSerieCommand,
+  FeatureValuesDTO,
   ItemSerieClient,
   QItemSerieFeatureValues,
   RemoveFeatureToSerieCommand,
 } from "../../api/client/GalaJewerlyClient";
-import { Badge } from "react-bootstrap";
+import { Badge, Form, ListGroup } from "react-bootstrap";
 import { AuthContext } from "../../contexts/AuthContext";
 
 type ItemSerieTagListProps = {
@@ -14,24 +15,36 @@ type ItemSerieTagListProps = {
   onChanges: () => void;
 };
 
-const ItemSerieTagList = ({ serieId, tags,onChanges }: ItemSerieTagListProps) => {
-  const [feature, setfeature] = useState<string>("");
-  const cookies = useContext(AuthContext);
+const ItemSerieTagList = ({
+  serieId,
+  tags,
+  onChanges,
+}: ItemSerieTagListProps) => {
+  const contextAuth = useContext(AuthContext);
+
+  // variables for tag manager
+  const [features, setFeatures] = useState<FeatureValuesDTO>();
+  const [optionsFet, setOptionsFet] = useState<string[]>([]);
+
+  const [featureStr, setFeatureStr] = useState<string>("");
+  const [featureStrReal, setFeatureStrReal] = useState<string>("");
+  const [featureValStrReal, setFeatureValStrReal] = useState<string>("");
+  const [newFeatureStr, setNewFeatureStr] = useState<string>("");
 
   const addNewTag = async () => {
-    const client = new ItemSerieClient(import.meta.env.VITE_HOST_API_JEWERLY);
-    client.setAuthToken(cookies?.cookies["accessToken"] == undefined ? '': cookies?.cookies["accessToken"])
+    const client = new ItemSerieClient(undefined, contextAuth?.instance);
     const serieIdValue = serieId === undefined ? "" : serieId;
     const request = {
       serieId: serieIdValue,
-      featureName: feature.trim().split(":")[0].trim(),
-      value: feature.trim().split(":")[1].trim(),
+      featureName: newFeatureStr.trim().split(":")[0].trim(),
+      value: newFeatureStr.trim().split(":")[1].trim(),
     } as AddFeatureToSerieCommand;
 
     client
       .addFeatureToSerie(serieIdValue, request)
-      .then(() => {
+      .then(async () => {
         onChanges();
+        setNewFeatureStr("")
       })
       .catch((error) => {
         console.log(error);
@@ -42,7 +55,7 @@ const ItemSerieTagList = ({ serieId, tags,onChanges }: ItemSerieTagListProps) =>
     featureName: string | undefined,
     value: string | undefined
   ) => {
-    const client = new ItemSerieClient(import.meta.env.VITE_HOST_API_JEWERLY);
+    const client = new ItemSerieClient(undefined, contextAuth?.instance);
     const serieIdValue = serieId === undefined ? "" : serieId;
 
     const request = {
@@ -52,30 +65,102 @@ const ItemSerieTagList = ({ serieId, tags,onChanges }: ItemSerieTagListProps) =>
     } as RemoveFeatureToSerieCommand;
     client
       .removeFeatureToSerie(serieIdValue, request)
-      .then(() => {
+      .then(async () => {
         onChanges();
       })
       .catch((error) => {
         console.log(error);
       });
   };
+
+  const listFeaturesValues = async () => {
+    const client = new ItemSerieClient(undefined, contextAuth?.instance);
+    client
+      .getFeatureValues()
+      .then((result) => {
+        setFeatures(result);
+        // setSuppliers(result);
+      })
+      .catch((error) => {
+        // console.log(error);
+      });
+  };
+  const handleClikSelectTagValue = (option: string) => {
+    //{featureStrReal}:{featureValStrReal}
+    if (featureValStrReal.trim() === "") {
+      setFeatureStrReal(option);
+      setNewFeatureStr(option + ":");
+    } else {
+      setFeatureValStrReal(option);
+      setNewFeatureStr(`${featureStrReal}:${option}`);
+    }
+    setFeatureStr("");
+  };
+
+  const handleInputChangeTagMang = (event: ChangeEvent<HTMLInputElement>) => {
+    setNewFeatureStr(event.target.value.trim());
+    const valueStr: string = event.target.value.trim();
+    const values = valueStr.split(":");
+
+    setFeatureStrReal("");
+    setFeatureValStrReal("");
+
+    if (values.length === 2) {
+      const feature = valueStr.split(":")[0].trim();
+      const value = valueStr.split(":")[1].trim();
+      setFeatureStr(value);
+      setFeatureStrReal(feature);
+      setFeatureValStrReal(value);
+      setOptionsFet(features?.values ?? []);
+    } else {
+      setFeatureStr(valueStr);
+      setFeatureStrReal(valueStr);
+      setOptionsFet(features?.features ?? []);
+    }
+  };
+  useEffect(() => {
+    listFeaturesValues();
+  }, []);
+
   return (
     <>
-      <div className="input-group mb-3">
-        <input
-          type="text"
-          className="form-control"
-          placeholder="nombre: valor"
-          value={feature}
-          onChange={(e) => {
-            setfeature(e.target.value);
-          }}
-        />
-        <button type="button" className="btn btn-secondary" onClick={addNewTag}>
-          Agregar
-        </button>
+      <div className="col-12">
+        <Form.Group className="typeahead-form-group">
+          <div className="input-group">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="nombre: valor"
+              value={newFeatureStr}
+              onChange={handleInputChangeTagMang}
+            />
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={addNewTag}
+            >
+              Agregar
+            </button>
+          </div>
+          <ListGroup className="typeahead-list-group">
+            {featureStr.length > 0 &&
+              optionsFet
+                .filter((item) => item.includes(featureStr))
+                .map((value) => {
+                  return (
+                    <ListGroup.Item
+                      className="typeahead-list-group-item"
+                      key={value}
+                      onClick={() => handleClikSelectTagValue(value)}
+                    >
+                      {value}
+                    </ListGroup.Item>
+                  );
+                })}
+          </ListGroup>
+        </Form.Group>
       </div>
-      <div>
+      <div className="col-12">
         {tags?.map((tag, tagIndex) => {
           return (
             <Badge pill bg="dark" key={tagIndex + "tag"} className="mb-1 mr-1">

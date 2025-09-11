@@ -1,19 +1,10 @@
-import { useEffect } from "react";
+import React from "react";
 import { Outlet } from "react-router-dom";
 
 
 const InventoryView = () => {
-
-  useEffect(() => {
-
-  }, []);
-
   return (
-    <>
-      <h3>Inventario</h3>
-      <hr />
-      <Outlet></Outlet>
-    </>
+    <React.StrictMode><Outlet></Outlet></React.StrictMode>
   );
 };
 

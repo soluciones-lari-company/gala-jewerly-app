@@ -1,29 +1,30 @@
-import { Badge } from "react-bootstrap";
+import { Accordion } from "react-bootstrap";
 import { ItemSerieFeatures } from "../../api/client/GalaJewerlyClient";
 
 type ItemSerieListTagsProps = {
-    tags: ItemSerieFeatures[];
-}
+  tags: ItemSerieFeatures[];
+};
 
-const ItemSerieListTags = ({tags}: ItemSerieListTagsProps) => {
+const ItemSerieListTags = ({ tags }: ItemSerieListTagsProps) => {
+  return (
+    <div>
+      {tags?.map((tag, tagIndex) => {
+        return (
+          <Accordion defaultActiveKey="0" flush key={tagIndex + "tag"}>
+            <Accordion.Item eventKey="0">
+              <Accordion.Header>{tag.featureName}</Accordion.Header>
+              <Accordion.Body>
+                <div className="custom-control custom-checkbox">
+                  <input type="checkbox" className="custom-control-input" />
+                  <label className="custom-control-label">{tag.value}</label>
+                </div>
+              </Accordion.Body>
+            </Accordion.Item>
+          </Accordion>
+        );
+      })}
+    </div>
+  );
+};
 
-    return (
-        <div>
-        {tags?.map((tag, tagIndex) => {
-          return (
-            <Badge pill bg="dark" key={tagIndex + "tag"} className="mb-1 mr-1">
-              {tag.featureName} | {tag.value}
-              <i
-                className="bi bi-x-circle-fill ms-2"
-                role="button"
-              >
-                x
-              </i>
-            </Badge>
-          );
-        })}
-      </div>
-    )
-}
-
-export default ItemSerieListTags
+export default ItemSerieListTags;
