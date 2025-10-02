@@ -86,21 +86,6 @@ const PaymentCreateForOrder = ({
         <Modal.Body>
           <fieldset className="mb-2">
             <div className="row">
-              <div className="col-12 mb-2">
-                <FloatingLabel
-                  controlId="floatingInput"
-                  label="Importe del pago"
-                >
-                  <Form.Control
-                    type="number"
-                    placeholder="introduce aqui..."
-                    value={paymentTotal}
-                    onChange={(e) =>
-                      setPaymentTotal(parseFloat(e.currentTarget.value))
-                    }
-                  />
-                </FloatingLabel>
-              </div>
               <div className="col-12">
                 <div className="row">
                   <div className="col-12">
@@ -179,6 +164,21 @@ const PaymentCreateForOrder = ({
                     );
                   })}
                 </div>
+              </div>
+              <div className="col-12 mb-2 mt-4">
+                <FloatingLabel
+                  controlId="floatingInput"
+                  label="Importe del pago"
+                >
+                  <Form.Control
+                    type="number"
+                    placeholder="introduce aqui..."
+                    value={paymentTotal}
+                    onChange={(e) =>
+                      setPaymentTotal(parseFloat(e.currentTarget.value))
+                    }
+                  />
+                </FloatingLabel>
               </div>
             </div>
           </fieldset>

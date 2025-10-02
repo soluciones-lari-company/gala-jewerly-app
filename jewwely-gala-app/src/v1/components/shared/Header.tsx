@@ -1,5 +1,5 @@
 import { Nav, Navbar, Offcanvas } from "react-bootstrap";
-import { CiReceipt, CiShoppingCart, CiSun, CiUser } from "react-icons/ci";
+import { CiReceipt, CiShoppingCart, CiSun, CiUser, CiWallet } from "react-icons/ci";
 import { Link } from "react-router-dom";
 
 const Header = () => {
@@ -34,6 +34,14 @@ const Header = () => {
           </Offcanvas.Body>
         </Navbar.Offcanvas>
         <div className="d-flex gap-sm-1 position-relative z-1">
+                    <Link
+            to={`/customer/`}
+            type="button"
+            aria-label="Shopping cart"
+            className="btn btn-icon btn-secondary rounded-circle animate-scale btn-lg fs-lg bg-transparent border-0"
+          >
+            <CiWallet className="animate-target"></CiWallet>
+          </Link>
           <Link
             to={`/inventory/`}
             type="button"

@@ -24,6 +24,7 @@ import Step3AddPayments from "../pages/checkout/Step3AddPayments";
 import Step4Confirm from "../pages/checkout/Step4Confirm";
 import ViewCart from "../pages/checkout/ViewCart";
 import Step5OrderSubmitted from "../pages/checkout/Step5OrderSubmitted";
+import CustomerList from "../pages/customer/CustomerList";
 
 const PrivateRoute = () => {
   const user = useGalaAuth();
@@ -65,6 +66,7 @@ const RoutesGala = () => {
             <Route path="/inventory/" element={<InventoryIndex />} />
             <Route path="/inventory/create-serie" element={<CreateSerie />} />
             <Route path="/inventory/serie/:serieId" element={<InventorySerieEdit />} />
+            <Route path="/customer/" element={<CustomerList />} />
           </Route>
           {/* Other routes */}
         </Router>
